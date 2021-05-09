@@ -1,0 +1,3299 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:attributeGroup name="inheritAttrs">
+        <xs:attribute name="_inheritRemove" type="xs:boolean"/>
+        <xs:attribute name="_noinherit" type="xs:boolean"/>
+        <xs:attribute name="_template" type="xs:string"/>
+    </xs:attributeGroup>
+
+    <xs:element name="Truck" type="T_Truck"/>
+
+    <xs:complexType name="T_Truck">
+        <xs:annotation>
+            <xs:documentation>
+                Рутовый тег файла класса трака и трейлера.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="TruckData" type="T_TruckData" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Snorkel" type="T_Snorkel" maxOccurs="1"/>
+            <xs:element name="Rotator" type="T_Rotator" maxOccurs="1"/>
+            <xs:element name="PhysicsModel" type="T_PhysicsModel" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ModelAttachments" type="T_ModelAttachments" maxOccurs="1"/>
+            <xs:element name="Landmark" type="T_Landmark" maxOccurs="1"/>
+            <xs:element name="HeadLight" type="T_Light" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Light передних фар. Секция описывает основной источник света для передних фар.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GameData" type="T_GameData" maxOccurs="1"/>
+            <xs:element name="ControlledConstraints" type="T_ControlledConstraints" maxOccurs="1"/>
+            <xs:element name="AutomaticIK" type="T_AutomaticIK" maxOccurs="1"/>
+        </xs:choice>
+        <xs:attribute name="Type">
+            <xs:annotation>
+                <xs:documentation>
+                    Этот атрибут определяет, описывается трак или трейлер.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Trailer"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Snorkel">
+        <xs:annotation>
+            <xs:documentation>
+                Шноркель.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Origin" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Позиция точки, выше которой трак начинает получать повреждения от утопания.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Rotator">
+        <xs:annotation>
+            <xs:documentation>
+                Кость, вращающаяся в зависимости от работы двигателя.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Frame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Нефизичная кость, которую вращаем.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="EngineTorqueFactor" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Влияние оборотов двигателя на скорость вращения. Если значение 0, то кость вращается со скоростью RotationSpeed, когда двигатель заведен и не ускоряется при повышении оборотов двигателя. Если двигатель выключен, ротатор не работает.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="RotationSpeed" type="xs:decimal" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Cкорость вращения. По умолчанию: 0.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="RotationAxis" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Ось вращения. По умолчанию: (0; 1; 0)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя ротатора.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_ModelAttachments">
+        <xs:annotation>
+            <xs:documentation>
+                Секция описания света.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="StopSignals" type="T_Signals" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Секция описания стоп-сигналов.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ReverseSignals" type="T_Signals" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Секция реверс-сигналов.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Ignition" type="T_Signals" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Секция освещения.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="HeadLight" type="T_Signals" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Секция, которая описывает имитацию лучей света и “фларик” передних фар.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:choice>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Signals">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="Model" type="T_Model" minOccurs="0"/>
+            <xs:element name="Light" type="T_Light" minOccurs="0"/>
+            <xs:element name="Flare" type="T_Flare" minOccurs="0"/>
+        </xs:choice>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Light">
+        <xs:annotation>
+            <xs:documentation>
+                Источник света.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Pos" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение источника света
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Dir" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор направления
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="AttenStart">
+            <xs:annotation>
+                <xs:documentation>
+                    Начало затухания в метрах
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="AttenEnd">
+            <xs:annotation>
+                <xs:documentation>
+                    Длина луча в метрах. По умолчанию 0.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="InnerCone" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Внутренний конус (свет не рассеивается). По умолчанию 360.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="OuterCone" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Внешний конус. По умолчанию 0.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Color" type="color">
+            <xs:annotation>
+                <xs:documentation>
+                    Цвет света и множитель яркости. Значение по умолчанию "(0; 0; 0)". g - гамма-коррекция, x 2 - яркость.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Кость из иерархии физ. модели, к которой крепится Light. Если параметр не указан, то это рутовая кость.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Model">
+        <xs:annotation>
+            <xs:documentation>
+                Имитация лучей света.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Org" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение начала координат модели.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Dir" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор направления.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Mesh" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Путь к fbx модели, относительно папки .../meshes
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+        </xs:attribute>
+        <xs:attribute name="Scale" type="coords">
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Flare">
+        <xs:annotation>
+            <xs:documentation>
+                Точечный источник света, который создает свечение вокруг точки. Визуально похож на яркий свет лампочки или далекий свет от фар в лицо.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Pos" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение источника света.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Dir" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор направления.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="DirAngle" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Угол видимости фларика в градусах.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="AttenStart">
+            <xs:annotation>
+                <xs:documentation>
+                    Начало затухания яркости фларика в метрах. По умолчанию: 60.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="AttendEnd">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальная дальность видимости фларика. По умолчанию: 120.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Кость из иерархии физ. модели, к которой крепится Light. Если параметр не указан, то это рутовая кость.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Color" type="color">
+            <xs:annotation>
+                <xs:documentation>
+                    Цвет света и множитель яркости. Значение по умолчанию "(0; 0; 0)".
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ColorMultAtDay">
+            <xs:annotation>
+                <xs:documentation>
+                    Коэффициент яркости света днем. По умолчанию: 1, значения: [0; 1000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Size">
+            <xs:annotation>
+                <xs:documentation>
+                    Размер фларика. По умолчанию: 1, значения: [0.0001; 1000000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.0001"/>
+                    <xs:maxInclusive value="1000000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="AspectRatio">
+            <xs:annotation>
+                <xs:documentation>
+                    Соотношение сторон. По умолчанию: 1, значения: [-1000000; 1000000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-1000000"/>
+                    <xs:maxInclusive value="1000000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Texture" type="mapFile">
+            <xs:annotation>
+                <xs:documentation>
+                    Путь к файлу текстуры формы фларика. Значение по умолчанию: "sfx/flare_simple__s_d.tga".
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Reflections" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Отражения.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_TruckData">
+        <xs:annotation>
+            <xs:documentation>
+                Описание большинства свойств непосредственно трака, не относящихся к поведению костей.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="WinchUpgradeSocket" type="T_WinchUpgradeSocket" maxOccurs="1"/>
+            <xs:element name="Wheels" type="T_Wheels" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="SuspensionSocket" type="T_SuspensionSocket" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="SteeringWheel" type="T_SteeringWheel" maxOccurs="1"/>
+            <xs:element name="SteeringRack" type="T_SteeringRack" maxOccurs="1"/>
+            <xs:element name="Steam" type="T_Steam"/>
+            <xs:element name="SoundsWheels" type="T_SoundsWheels" maxOccurs="1"/>
+            <xs:element name="SoundsDamage" type="T_SoundsDamage" maxOccurs="1"/>
+            <xs:element name="Sounds" type="T_Sounds" maxOccurs="1"/>
+            <xs:element name="Shakers" type="T_Shakers" maxOccurs="1"/>
+            <xs:element name="Shafts" type="T_Shafts" maxOccurs="1"/>
+            <xs:element name="OcclusionMap" type="T_OcclusionMap" maxOccurs="1"/>
+            <xs:element name="Messages" type="T_Messages" maxOccurs="1"/>
+            <xs:element name="LimitedFluid" type="T_LimitedFluid"/>
+            <xs:element name="Intake" type="T_Intake" maxOccurs="1"/>
+            <xs:element name="GearboxSocket" type="T_GearboxSocket" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="FuelTank" type="T_FuelTank" maxOccurs="1"/>
+            <xs:element name="Exhaust" type="T_Exhaust" maxOccurs="1"/>
+            <xs:element name="EngineSocket" type="T_EngineSocket" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Driver" type="T_Driver" maxOccurs="1"/>
+            <xs:element name="Dashboard" type="T_Dashboard" maxOccurs="1"/>
+            <xs:element name="Damage" type="T_Damage" maxOccurs="1"/>
+            <xs:element name="CompatibleWheels" type="T_CompatibleWheels" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Camera" type="T_Camera" maxOccurs="1"/>
+            <xs:element name="Axles" type="T_Axles" maxOccurs="1"/>
+        </xs:choice>
+        <xs:attribute name="BackSteerSpeed" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Скорость, с которой колёса возвращаются на исходную позицию после поворота. Значение: [0.0:1.0].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.0"/>
+                    <xs:maxInclusive value="1.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="DiffLockType">
+            <xs:annotation>
+                <xs:documentation>
+                    Блокировка дифференциала. Значения: Always. Любые другие значения не считываются и используются чисто для удобства понимания, есть ли аддон дифлока (Installed, Uninstalled, None).
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Always"/>
+                    <xs:enumeration value="Installed"/>
+                    <xs:enumeration value="Uninstalled"/>
+                    <xs:enumeration value="None"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="EngineIconMesh" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Путь к файлу полупрозрачного двигателя .../meshes/env/engine_default.fbx
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="EngineIconScale">
+            <xs:annotation>
+                <xs:documentation>
+                    Скейл полупрозрачного двигателя. Значение (0.0: 8.0].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                    <xs:maxInclusive value="8.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="EngineStartDelay">
+            <xs:annotation>
+                <xs:documentation>
+                    Задержка после нажатия “включить двигатель”. Значение [0.0: 8.0].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.0"/>
+                    <xs:maxInclusive value="8.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ExhaustStartTime">
+            <xs:annotation>
+                <xs:documentation>
+                    Время начала визуализации выхлопа. Нет явного ограничения.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="FuelCapacity" type="xs:nonNegativeInteger">
+            <xs:annotation>
+                <xs:documentation>
+                    Вместимость топливных баков. Целое число. Для трака явно не ограничено. Для аддона: [0:64000].
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Responsiveness" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Чувствительность руля. Значение: [0.0: 1.0].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.0"/>
+                    <xs:maxInclusive value="1.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SteerSpeed" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Скорость поворота руля. Значение: [0.0: 1.0].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.0"/>
+                    <xs:maxInclusive value="1.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="TruckImage" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Иконка трака для гаража. Примечание: Использование пользовательских иконок для моддинга на данный момент находится в процессе разработки.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="TruckType">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="HEAVY"/>
+                    <xs:enumeration value="HEAVY_DUTY"/>
+                    <xs:enumeration value="HIGHWAY"/>
+                    <xs:enumeration value="OFFROAD"/>
+                    <xs:enumeration value="SCOUT"/>
+                    <xs:enumeration value="SPECIAL"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="EngineMarkerOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг для маркера состояния движка.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="FueltankMarkerOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг для маркера состояния топливного бака.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="SuspensionMarkerOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг для маркера состояния подвески.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="GearboxMarkerOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг для маркера состояния коробки передач.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Wheels">
+        <xs:annotation>
+            <xs:documentation>
+                Секция описания колёс.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="Wheel" type="T_Wheel" minOccurs="1"/>
+        </xs:choice>
+        <xs:attribute name="DefaultRim" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя дефолтного диска, заданное в файле, на который ссылается DefaultWheelType
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="DefaultTire" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя дефолтной покрышки, заданное в файле, на который ссылается DefaultWheelType
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="DefaultWheelType" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя файла дефолтного класса колес .../classes/wheels/wheels_example.xml
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+    
+    <xs:complexType name="T_SuspensionSocket">
+        <xs:annotation>
+            <xs:documentation>
+                Описание доступных подвесок.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Type" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя XML класса подвески. Вообще может быть несколько типов через запятую "trailer_sideboard_2, example_1, example_2", но подвеска очень индивидуальна и это не используется.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Default" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя дефолтной подвески из XML класса подвески
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MaxWheelRadiusWithoutSuspension" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный радиус колеса без подвески. Логично вычислять как разность радиуса самого большого колеса для самой низкой подвески и высоты низкой подвески (Если в подвеске Height 0.1, Тогда 0.3+0.1 = 0.4 радиус колеса, которое можно ставить).
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_GearboxSocket">
+        <xs:annotation>
+            <xs:documentation>
+                Описание доступных коробок передач.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Type" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя xml-файла из папки .../classes/gearboxes. Может быть несколько типов через запятую "gearboxes_trucks, gearboxes_special".
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Default" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя дефолтной коробки, определенное в xml-коробки в теге Gearbox Name="g_truck_default"
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_EngineSocket">
+        <xs:annotation>
+            <xs:documentation>
+                Описание доступных двигателей.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Type" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя xml-файла из папки.../classes/engines. Может быть несколько типов через запятую "e_us_truck_modern, e_us_truck_old".
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Default" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя дефолтного двигателя, определено в xml-двигателя в теге Engine Name="us_truck_modern_engine_0"
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_CompatibleWheels">
+        <xs:annotation>
+            <xs:documentation>
+                Доступные колёса.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Type" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Тип. Имя XML-класса колес из папки .../classes/wheels/
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Scale" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Равномерный скейл колеса. Мы делаем колеса радиуса 1 метр, поэтому скейл является фактическим размером колеса на траке.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="OffsetZ" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг колеса по оси Z относительно позиции указанной в Wheel Pos="(-3; 1.2; 1.5)". Это дает возможность ставить на трак колеса разной ширины без пересечения геометрии с траком. Если указан только OffsetZ, все колеса сдвинутся на это значение, независимо от Location колеса (Wheel Location="").
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="RearOffsetZ" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг задних колес по оси Z. Если указан, то колеса Wheel Location="rear" раздвинутся на это значение.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Wheel">
+        <xs:annotation>
+            <xs:documentation>
+                Описание конкретного колеса.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Pos" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение левого колеса (Координата z обязательно должна быть положительной).
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="\((-?\d+(\.\d+)?;\s?){2}\d+(\.\d+)?\)"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="RightSide" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Этот параметр делает из левого колеса правое (диск колеса разворачивается, а рисунок протектора остается повернут в правильном направлении). Положение по оси z будет отрицательным.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Кость из иерархии физической модели, к которой крепится колесо. Если параметр не указан, то это рутовая кость физ. модели.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ConnectedToHandbrake" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Колесо участвует в торможении при нажатии пробела.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Location">
+            <xs:annotation>
+                <xs:documentation>
+                    Значения: front и rear. Используется только для составных колес, для определения того, переднее это колесо или заднее. По умолчанию: front.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="front"/>
+                    <xs:enumeration value="rear"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Torque">
+            <xs:annotation>
+                <xs:documentation>
+                    Крутящий момент.
+                    Значения:
+                    - default - колесо всегда ведущее.
+                    - full - колесо ведущее, только когда включен полный привод.
+                    - none - колесо не ведущее.
+                    - connectable - наличие привода определяется параметром AllWheelDriveInstalled в установленном аддоне раздаточной коробки.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="default"/>
+                    <xs:enumeration value="full"/>
+                    <xs:enumeration value="none"/>
+                    <xs:enumeration value="connectable"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SteeringAngle">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный угол поворота колеса при рулении. Значение: [-90.0: 90.0], по умолчанию: 0.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-90.0"/>
+                    <xs:maxInclusive value="90.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SteetingCastor">
+            <xs:annotation>
+                <xs:documentation>
+                    Угол наклона колеса по оси OX в сторону поворота. Значение: [0: 45.0], по умолчанию: 0.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.0"/>
+                    <xs:maxInclusive value="45.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SteeringJointOffset">
+            <xs:annotation>
+                <xs:documentation>
+                    Расстояние по оси Z от центра колеса до точки поворота колеса.
+                    Значение: [-1000.0: 1000.0], по умолчанию: fWidth*0.4, где fWidth - толщина колеса, заданная в классе колеса атрибутом Width тега TruckWheel.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-1000.0"/>
+                    <xs:maxInclusive value="1000.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SuspensionMin">
+            <xs:annotation>
+                <xs:documentation>
+                    Минимальное значение просадки подвески. Значение: [-1000.0: 1000.0], по умолчанию: 0.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-1000.0"/>
+                    <xs:maxInclusive value="1000.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SuspensionHeight">
+            <xs:annotation>
+                <xs:documentation>
+                    Высота подвески.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SuspensionStrength">
+            <xs:annotation>
+                <xs:documentation>
+                    Жесткость подвески. Значение: [0.0: 1000.0], по умолчанию: 0.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.0"/>
+                    <xs:maxInclusive value="1000.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Type" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя файла колеса. Используется и обязателен только при описании целого колеса (для составного это значение должно быть прописано в CompatibleWheels Type="wheels_medium_double" и в Wheels DefaultWheelType="wheels_medium_double", если колесо дефолтное ).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_PhysicsModel">
+        <xs:annotation>
+            <xs:documentation>
+                Физическая модель.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="NetSync" type="T_NetSync" minOccurs="0"/>
+            <xs:element name="Body" type="T_Body" minOccurs="1"/>
+        </xs:all>
+        <xs:attribute name="Mesh" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Путь к fbx-файлу трака из папки .../meshes/
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_NetSync">
+        <xs:annotation>
+            <xs:documentation>
+                Синхронизация мультиплеера.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Legacy" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Синхронизация всех костей физ. модели. По умолчанию: true.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Body">
+        <xs:annotation>
+            <xs:documentation>
+                Физическое тело (или физическая кость).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="Body" type="T_Body" minOccurs="0"/>
+            <xs:element name="Constraint" type="T_Constraint" minOccurs="0"/>
+        </xs:choice>
+        <xs:attribute name="NetSync">
+            <xs:annotation>
+                <xs:documentation>
+                    Сетевая синхронизация позиции (position) и скорости (velocity) физ.тела. Значения: "p", "v", "pv".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="p"/>
+                    <xs:enumeration value="v"/>
+                    <xs:enumeration value="pv"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ModelFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости из fbx-файла.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Mass">
+            <xs:annotation>
+                <xs:documentation>
+                    Масса физ.тела. По умолчанию: 0. Границы: [0;1000000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1000000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="CenterOfMassOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Смещение центра масс тела относительно центра масс, рассчитанного Havok. Havok рассчитывает это значение из формы коллизионного меша.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="GravityFactor">
+            <xs:annotation>
+                <xs:documentation>
+                    Коэффициент влияния гравитации. Дефолтное значение: 1, границы: [0;1000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="AngularDamping">
+            <xs:annotation>
+                <xs:documentation>
+                    Вязкость окружающей среды для угловых перемещений. Дефолтное значение: 0.05, границы: [0;1000000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1000000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="LinearDamping">
+            <xs:annotation>
+                <xs:documentation>
+                    Вязкость окружающей среды для линейных перемещений. Дефолтное значение: 0, границы: [0;1000000]. 
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1000000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Friction">
+            <xs:annotation>
+                <xs:documentation>
+                    Трение при взаимодействии с другими физ.телами. Дефолтное значение: 0.5, границы: [0;1000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ImpactType">
+            <xs:annotation>
+                <xs:documentation>
+                    Отвечает за спецэффекты. Тип Truck означает, что при столкновении будут вылетать искры и проигрываться соответствующие звуки.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Truck"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Collisions">
+            <xs:annotation>
+                <xs:documentation>
+                    Тип коллизии. Значения:
+                    ○ Default - значение по умолчанию, кости трака и его аддонов коллизятся со всеми коллизионными объектами, но не друг с другом.
+                    ○ None - кость не коллизится ни с чем.
+                    ○ All - кость коллизится как с внешними объектами, так и с костями трака и аддонов.
+                    ○ Internal - коллизия с собственными костями и костями аддонов.
+                    ○ OnlyWithAll - коллизия только с костями, у которых указан тип All.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Default"/>
+                    <xs:enumeration value="None"/>
+                    <xs:enumeration value="All"/>
+                    <xs:enumeration value="Internal"/>
+                    <xs:enumeration value="OnlyWithAll"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ForceBodyParams" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    С грязью и водой взаимодействуют только "большие" тела в грузовике. А мелкие - нет. Какие большие, а какие мелкие - определяется автоматически. Чтобы принудительно включить взаимодействие и нужен этот параметр.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="NoFoliageCollisions" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Отключение коллизии с травой и листвой.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Constraint">
+        <xs:annotation>
+            <xs:documentation>
+                Способ привязки физ.тела к его родительскому телу («телу-паренту»).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="Motor" type="T_Motor" minOccurs="0"/>
+            <xs:element name="PlaneMotor" type="T_Motor" minOccurs="0"/>
+            <xs:element name="ConeMotor" type="T_Motor" minOccurs="0"/>
+            <xs:element name="TwistMotor" type="T_Motor" minOccurs="0"/>
+            <xs:element name="AllMotor" type="T_Motor" minOccurs="0"/>
+        </xs:all>
+        <xs:attribute name="PivotOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг пивота. Пивот - это координата кости в f
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Type">
+            <xs:annotation>
+                <xs:documentation>
+                    Тип соединения.
+                    Значения:
+                    ○ Fixed - фиксированное соединение. Если используются атрибуты LinearLimitsX, Y, Z, то соединение получает степени свободы по заданным осям в заданных пределах (см. описания этих атрибутов ниже). В качестве примера, если задать все три степени свободы, то это соединение можно использовать для описания движения без вращения незакрепленного предмета в коробке.
+                    ○ Ragdoll - вращение по всем осям в заданных пределах. Соединение подходящее для описания плечевого сустава или язычка колокольчика.
+                    ○ Hinge - вращение по одной оси в заданных пределах. Соединение, подходящее для описания дверной петли.
+                    ○ UnlimitedHinge - неограниченное вращение вдоль заданной оси.
+                    ○ Prismatic - линейное перемещение по одной оси в заданных пределах. Соединение подходящее для описания насоса, гидравлики, и т.д.
+                    ○ Rigid - жесткое соединение рутовой кости аддона с костью трака, при котором коллизионный объект рутовой кости становится частью кости трака. Это соединение нужно, например, для описания бамперов, поскольку Havok-констрейны (все что выше) не жестко отсекают линейные деформации по осям, которые ожидается видеть неподвижными. И, при столкновении, например, бампера на Fixed констрейне со стеной, он пружинит, а при сильных отклонениях и вообще машина может войти в резонанс и разлететься. Этот констрейн работает только на рутовой кости аддона.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Fixed"/>
+                    <xs:enumeration value="Ragdoll"/>
+                    <xs:enumeration value="Hinge"/>
+                    <xs:enumeration value="UnlimitedHinge"/>
+                    <xs:enumeration value="Prismatic"/>
+                    <xs:enumeration value="Rigid"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="LinearLimitsX" type="diapas">
+            <xs:annotation>
+                <xs:documentation>
+                    Лимиты линейного перемещения констрейнта типа Fixed по оси X.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="LinearLimitsY" type="diapas">
+            <xs:annotation>
+                <xs:documentation>
+                    Лимиты линейного перемещения констрейнта типа Fixed по оси Y.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="LinearLimitsZ" type="diapas">
+            <xs:annotation>
+                <xs:documentation>
+                    Лимиты линейного перемещения констрейнта типа Fixed по оси Z.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MinLimit" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Граница снизу перемещения для констрейнов типа Hinge и Prismatic. Значение по умолчанию:
+                    Hinge: -360, границы [-360, 360].
+                    Prismatic: 0
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MaxLimit" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Граница сверху перемещения для констрейна типа Hinge и Prismatic. Значение по умолчанию:
+                    Hinge: 360, границы [-360, 360].
+                    Prismatic: 0.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="AxisLocal" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор направления оси вращения для констрейнов типа Hinge и UnlimitedHinge. Значение по умолчанию: (0; 1; 0).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="TwistAxisLocal" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Направление оси (Twist) скручивания для констрейна типа Ragdoll. Значение по умолчанию (0; 1; 0). Если описываем сустав плеча, то это ось вращения предплечья.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="PlaneAxisLocal" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Направление оси (Plane) перпендикулярной оси Twist для констрейна типа Ragdoll. Значение по умолчанию: (1; 0; 0).
+                    Для однозначного определения констрейна такого типа необходимо задать два перпендикулярных вектора направления, третий (Cone) однозначно определяется векторным умножением TwistAxisLocal x PlainAxisLocal.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="TwistMin">
+            <xs:annotation>
+                <xs:documentation>
+                    Минимальный угол поворота вдоль оси Twist в градусах для констрейна типа Ragdoll. По умолчанию: 0, границы: [-180, 180].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-180"/>
+                    <xs:maxInclusive value="180"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="TwistMax">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный угол поворота вдоль оси Twist в градусах для констрейна типа Ragdoll. По умолчанию: 0, границы: [-180, 180].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-180"/>
+                    <xs:maxInclusive value="180"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="PlaneMin">
+            <xs:annotation>
+                <xs:documentation>
+                    Минимальный угол поворота вдоль оси Plane в градусах для констрейна типа Ragdoll. По умолчанию: -180, границы: [-180, 180].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-180"/>
+                    <xs:maxInclusive value="180"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="PlaneMax">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный угол поворота вдоль оси Plane в градусах для констрейна типа Ragdoll. По умолчанию: 180, границы: [-180, 180].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-180"/>
+                    <xs:maxInclusive value="180"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Cone" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Конус, внутри которого может вращаться кость, высотой которого является ось Twist. В примере с колокольчиком язычок - это кость, а стенки колокола - это
+                    Cone. PlaneMin и PlaneMax обрезают этот колокольчик.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ConeMin">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный угол поворота вдоль оси Cone в градусах для констрейна типа Ragdoll. По умолчанию: -180, границы: [-180, 180]. Используется, только если не задан атрибут Соne.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:int">
+                    <xs:minInclusive value="-180"/>
+                    <xs:maxInclusive value="180"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ConeMax">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный угол поворота вдоль оси Cone в градусах для констрейна типа Ragdoll. По дефолту: 180, границы: [-180, 180]. Используется, только если не задан атрибут Соne.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:int">
+                    <xs:minInclusive value="-180"/>
+                    <xs:maxInclusive value="180"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя констрейна конкретной кости. Используется для управления поведением кости с клавиатуры (PoweredConstraints и ControlledConstraints).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ExplicitParentFrame" type="xs:nonNegativeInteger">
+            <xs:annotation>
+                <xs:documentation>
+                    Этот атрибут используется только в аддонах (не в траках и не в прицепах) для указания того, что кость крепится не к своей родительской кости («паренту»), а к кости физ. модели трака, на который устанавливается аддон. Значения: номер по порядку упоминания ExtraParent в траке, начиная с нуля.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Motor">
+        <xs:annotation>
+            <xs:documentation>
+                Двигательный мускул.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Type">
+            <xs:annotation>
+                <xs:documentation>
+                    Тип мотора. Значения:
+                    Spring - пружина.
+                    Position - положение, которым можно управлять с клавиатуры (PoweredConstraints и ControlledConstraints).
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Spring"/>
+                    <xs:enumeration value="Position"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Spring">
+            <xs:annotation>
+                <xs:documentation>
+                    Атрибут используется для типа Spring. Жесткость пружины. Значение по умолчанию: 0, границы: [0, 1000000000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1000000000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Damping">
+            <xs:annotation>
+                <xs:documentation>
+                    Затухание. Значение
+                    Spring: по умолчанию: 0, границы: [0, 1000000000].
+                    Position: по умолчанию: 1, границы: [0, 1].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Tau">
+            <xs:annotation>
+                <xs:documentation>
+                    Атрибут используется для типа Position. Коэффициент, определяющий влияние физики хавка на констрейнт пытающийся выйти в заданную позицию. Если Tau == 0, физ.объект движется по физике без влияния управления, 1 - физика не влияет на управление. Значение по умолчанию: 0.8, границы: [0, 1].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Force">
+            <xs:annotation>
+                <xs:documentation>
+                    Атрибут используется для типа Position. Сила, прикладываемая для выхода тела в заданную позицию. Значение по умолчанию: 0, границы: [0, 1000000000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1000000000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_WinchUpgradeSocket">
+        <xs:attribute name="Default" type="xs:string">
+        </xs:attribute>
+        <xs:attribute name="IsUpgradable" type="xs:boolean">
+        </xs:attribute>
+        <xs:attribute name="Type" type="xs:string">
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Winch">
+        <xs:annotation>
+            <xs:documentation>
+                Параметры лебёдки.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Length">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальная длина веревки лебедки. Значение: [0.0: 100.0], по умолчанию: 14.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.0"/>
+                    <xs:maxInclusive value="100.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="StrengthMult">
+            <xs:annotation>
+                <xs:documentation>
+                    Сила лебедки лебедки. Значение: [0.0: 10.0], по умолчанию: 1.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.0"/>
+                    <xs:maxInclusive value="10.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_SteeringWheel">
+        <xs:annotation>
+            <xs:documentation>
+                Руль.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Frame" type="xs:string" use="required">
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_SteeringRack">
+        <xs:annotation>
+            <xs:documentation>
+                Рулевая рейка.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Frame" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости рейки.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="FrameSteerLeft" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости левой ступицы.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="FrameSteerRight" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости правой ступицы.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="RackHalfSizeZ" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Половина длины рулевой рейки (половина, поскольку чаще всего машина симметрична и это просто координата по Z).
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Steam">
+        <xs:annotation>
+            <xs:documentation>
+                Пар.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Origin" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Scale">
+            <xs:annotation>
+                <xs:documentation>
+                    Размер. Значение [0.1: 1], по умолчанию 1.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.1"/>
+                    <xs:maxInclusive value="1.0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости из физ. модели, к которой прикреплен. По умолчанию, рутовая кость.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Sound">
+        <xs:annotation>
+            <xs:documentation>
+                Звук.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Sound" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Звуковой файл.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_SoundsWheels">
+        <xs:annotation>
+            <xs:documentation>
+                Секция звуков колёс.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="WheelWater" type="T_Sound" minOccurs="0"/>
+            <xs:element name="WheelSteer" type="T_Sound" minOccurs="0"/>
+            <xs:element name="WheelSpinning" type="T_Sound" minOccurs="0"/>
+            <xs:element name="WheelMud" type="T_Sound" minOccurs="0"/>
+            <xs:element name="WheelExtrude" type="T_Sound" minOccurs="0"/>
+            <xs:element name="WheelDamaged" type="T_Sound" minOccurs="0"/>
+            <xs:element name="WheelChains" type="T_Sound" minOccurs="0"/>
+            <xs:element name="WaterHit" type="T_Sound" minOccurs="0"/>
+        </xs:all>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_SoundsDamage">
+        <xs:annotation>
+            <xs:documentation>
+                Секция звуков повреждений.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="Wheels" type="T_Sound" minOccurs="0"/>
+            <xs:element name="Suspension" type="T_Sound" minOccurs="0"/>
+            <xs:element name="Gearbox" type="T_Sound" minOccurs="0"/>
+            <xs:element name="FuelTank" type="T_Sound" minOccurs="0"/>
+            <xs:element name="Engine" type="T_Sound" minOccurs="0"/>
+            <xs:element name="Critical" type="T_Sound" minOccurs="0"/>
+            <xs:element name="Common" type="T_Sound" minOccurs="0"/>
+        </xs:all>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Sound2D">
+        <xs:annotation>
+            <xs:documentation>
+                Звук.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Sound" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Звуковой файл.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="IsSound2D" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Флаг, обозначающий, что для данного звука не нужно создавать эмиттер (позиция, откуда звук будет играться, как 3D звук) и звук будет играться напрямую в колонки\наушники в стерео. Для таких звуков соответственно нет никакой зависимости от дистанции до трака (оно и логично, потому что к таким звукам относятся только звуки движка). Играются в 2D режиме они при виде от 1-го лица\из кабины, если соответствующие звуки заданы в XML, иначе берутся дефолтные (EngineIdle вместо EngineIdle_2d, например).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Sounds">
+        <xs:annotation>
+            <xs:documentation>
+                Секция звуков трака.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="GearFail" type="T_Sound" minOccurs="0"/>
+            <xs:element name="Honk" type="T_Sound" minOccurs="0"/>
+            <xs:element name="Handbrake" type="T_Sound" minOccurs="0"/>
+            <xs:element name="HandbrakeOff" type="T_Sound" minOccurs="0"/>
+            <xs:element name="HeadLight" type="T_Sound" minOccurs="0"/>
+            <xs:element name="BrakePull" type="T_Sound" minOccurs="0"/>
+            <xs:element name="BrakeRelease" type="T_Sound" minOccurs="0"/>
+            <xs:element name="BrakesSqueal" type="T_Sound" minOccurs="0"/>
+            <xs:element name="Reverse" type="T_Sound" minOccurs="0"/>
+            <xs:element name="Gear" type="T_Sound" minOccurs="0"/>
+            <xs:element name="EngineTrans" type="T_Sound" minOccurs="0"/>
+            <xs:element name="EngineAccel" type="T_Sound" minOccurs="0"/>
+            <xs:element name="EngineRev" type="T_Sound" minOccurs="0"/>
+            <xs:element name="EngineStart" type="T_Sound" minOccurs="0"/>
+            <xs:element name="EngineStop" type="T_Sound" minOccurs="0"/>
+            <xs:element name="EngineIdle" type="T_Sound" minOccurs="0"/>
+            <xs:element name="EngineIdle_2d" type="T_Sound2D" minOccurs="0"/>
+            <xs:element name="EngineLow" type="T_Sound" minOccurs="0"/>
+            <xs:element name="EngineLow_2d" type="T_Sound2D" minOccurs="0"/>
+            <xs:element name="EngineHigh" type="T_Sound" minOccurs="0"/>
+            <xs:element name="EngineHigh_2d" type="T_Sound2D" minOccurs="0"/>
+            <xs:element name="EngineHeavy" type="T_Sound" minOccurs="0"/>
+            <xs:element name="EngineHeavy_2d" type="T_Sound2D" minOccurs="0"/>
+            <xs:element name="EngineTurbo" type="T_Sound" minOccurs="0"/>
+            <xs:element name="DiffLock" type="T_Sound" minOccurs="0"/>
+            <xs:element name="ChassisStress" type="T_Sound" minOccurs="0"/>
+            <xs:element name="AWD" type="T_Sound" minOccurs="0"/>
+            <xs:element name="AbruptStop" type="T_Sound" minOccurs="0"/>
+        </xs:choice>    
+        <xs:attribute name="AirHissInterval">
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="DisableReversePitch" type="xs:boolean"/>
+        <xs:attribute name="Origin" type="coords"/>
+        <xs:attribute name="MinDist">
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string"/>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Shakers">
+        <xs:annotation>
+            <xs:documentation>
+                Секция, содержащая шейкеры.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="Shaker" type="T_Shaker" minOccurs="1"/>
+        </xs:choice>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Shaker">
+        <xs:annotation>
+            <xs:documentation>
+                Шейкер.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Frame" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости-шейкера.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MinAngle" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальные углы поворота кости при включенном двигателе стоячей машины.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MaxAngle" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальные углы поворота кости при работающем на пределе двигателе.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MaxOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальные линейные сдвиги кости при работающем на пределе двигателе.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MaxFrequency">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальная частота дребезжания. Значения: [0; 1000], по умолчанию: 1.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="LimitDirectionX">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсечение негативного или позитивного вращения по направлению X.Значения Positive, Negative. (Использовался для того, чтобы при выключенном двигателе крышка выхлопной трубы была закрыта, а при включении она шевелилась только в одну сторону и не пересекалась с трубой).
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Positive"/>
+                    <xs:enumeration value="Negative"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="LimitDirectionY">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсечение негативного или позитивного вращения по направлению Y.Значения Positive, Negative.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Positive"/>
+                    <xs:enumeration value="Negative"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="LimitDirectionZ">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсечение негативного или позитивного вращения по направлению Z.Значения Positive, Negative.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Positive"/>
+                    <xs:enumeration value="Negative"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Shafts">
+        <xs:annotation>
+            <xs:documentation>
+                Секция, содержащая валы.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="Shaft" type="T_Shaft" minOccurs="1"/>
+        </xs:choice>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Shaft">
+        <xs:annotation>
+            <xs:documentation>
+                Вал.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="SocketPointA" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя сокета SocketPoint Name="ShaftA1", указанное в xml-меша трака или аддона раздаточной коробки.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="SocketPointB" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя сокета SocketPoint Name="ShaftB1", указанное в xml-меша трака или аддона раздаточной коробки.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Mesh" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>"
+                    Путь к файлу …/meshes/env/example_shaft.fbx. Значение по умолчанию: "env/shaft"
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="PointAConnectedToAddon" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    true, eсли сокет описан в xml-меша аддона раздаточной коробки. По умолчанию: false.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="PointBConnectedToAddon" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    true, eсли сокет описан в xml-меша аддона раздаточной коробки. По умолчанию: false.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_OcclusionMap">
+        <xs:annotation>
+            <xs:documentation>
+                Искусственная тень над траком.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="HalfSizeZ" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Половина ширины карты окклюзии.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="MinX" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Минимальная координата карты по X
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MaxX" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальная координата карты по X
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости их физ. модели, к которой припаренчена карта. По умолчанию: рутовая кость.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Texture" type="mapFile">
+            <xs:annotation>
+                <xs:documentation>
+                    Путь к файлу текстуры. Значение по умолчанию: "trucks/occlusion/chassis__s_d_a.tga"
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Messages">
+        <xs:annotation>
+            <xs:documentation>
+                Ручное позиционирование сообщений о повреждениях.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Pos" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости их физ. модели, к которой припаренчена надпись. По умолчанию рутовая кость.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_LimitedFluid">
+        <xs:annotation>
+            <xs:documentation>
+                Полупрозрачное отображение жидкости.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Center" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Центр ёмкости.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="LengthX">
+            <xs:annotation>
+                <xs:documentation>
+                    Длина цилиндра. Используется, только если Type="Cylinder".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="RadiusY">
+            <xs:annotation>
+                <xs:documentation>
+                    Вертикальная полуось эллипса основания цилиндра. Используется, только если Type="Cylinder".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="RadiusZ">
+            <xs:annotation>
+                <xs:documentation>
+                    Горизонтальная полуось эллипса основания цилиндра. Используется, только если Type="Cylinder".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SizeX">
+            <xs:annotation>
+                <xs:documentation>
+                    Длина куба. Используется, только если Type="Box".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SizeY">
+            <xs:annotation>
+                <xs:documentation>
+                    Высота куба. Используется, только если Type="Box".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SizeZ">
+            <xs:annotation>
+                <xs:documentation>
+                    Ширина куба. Используется, только если Type="Box".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Type" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Тип ёмкости. Значения "Box" и "Cylinder".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Cylinder"/>
+                    <xs:enumeration value="Box"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости их физ. модели, к которой припаренчена емкость. По умолчанию рутовая кость.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Intake">
+        <xs:annotation>
+            <xs:documentation>
+                Визуальное отображение забора воздуха.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Origin" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Позиция
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Dir" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор направления. Направлен в противоположную потоку воздуха сторону.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Size" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Размер.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_FuelTank">
+        <xs:annotation>
+            <xs:documentation>
+                Свойства бензобака.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="DamageCapacity" type="xs:nonNegativeInteger">
+            <xs:annotation>
+                <xs:documentation>
+                    Размер допустимого ущерба, по умолчанию: 0.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Exhaust">
+        <xs:annotation>
+            <xs:documentation>
+                Визуализация выхлопа.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Dir" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор направления. Направлен в сторону выхлопа.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Origin" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Координата начала выхлопа.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Speed" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Скорость.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="IsLight" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Если true, дым светлее.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Driver">
+        <xs:annotation>
+            <xs:documentation>
+                Расположение и анимации водителя.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Pos" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение рута водителя.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="SteeringWheelPos" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение центра баранки руля.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="AnimationSet">
+            <xs:annotation>
+                <xs:documentation>
+                    Значения: Scout, Truck, HeavyTruck. По умолчанию Truck.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Scout"/>
+                    <xs:enumeration value="Truck"/>
+                    <xs:enumeration value="HeavyTruck"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Кость из иерархии физической модели, к которой крепится водитель. Если параметр не указан, то это рутовая кость физ. модели.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="LegsOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Ноги водителя можно двинуть, если, например, они начинают пересекаться с моделью трака.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Dashboard">
+        <xs:annotation>
+            <xs:documentation>
+                Секция, содержащая стрелки приборной панели.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="Gauge" type="T_Gauge" minOccurs="1"/>
+        </xs:choice>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Gauge">
+        <xs:annotation>
+            <xs:documentation>
+                Описание поведения стрелки приборной панели.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Mesh" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Путь к fbx-файлу стрелки .../meshes/trucks/
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Org" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение стрелки.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Dir" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор направления, нормальный к плоскости циферблата прибора и направленный внутрь кабины (в координатах fbx стрелки это "(0; 1; 0)" ).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="OutputAngles" type="diapas" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Диапозон, в котором может вращаться стрелка вдоль локальной оси OY
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Damping">
+            <xs:annotation>
+                <xs:documentation>
+                    Отклик стрелки на изменение входа.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="InputRange" type="diapas">
+            <xs:annotation>
+                <xs:documentation>
+                    Диапазон значений входа. Зависит от InputType, чаще всего - это вкл/выкл, то есть (0;1), так как большинство стрелок после включения двигателя выходят в какое-то положение и там остаются условно неподвижно, но значения вроде скорости можно выставить в зависимости от того, что написано на шкале спидометра. Значение по умолчанию: "(0; 1)"
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="InputType" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя входа. Значения: "speed", "rpm", "fuel", "none", "handbrake", "engineEnabled", "headlight", "difflock", "difflockStress".
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="speed"/>
+                    <xs:enumeration value="rpm"/>
+                    <xs:enumeration value="fuel"/>
+                    <xs:enumeration value="none"/>
+                    <xs:enumeration value="handbrake"/>
+                    <xs:enumeration value="engineEnabled"/>
+                    <xs:enumeration value="headlight"/>
+                    <xs:enumeration value="difflock"/>
+                    <xs:enumeration value="difflockStress"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Scale" type="xs:decimal">
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Damage">
+        <xs:annotation>
+            <xs:documentation>
+                Секция, в которой задаются зоны повреждений.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="DamageArea" type="T_DamageArea" minOccurs="1"/>
+        </xs:choice>
+        <xs:attribute name="Capacity" type="xs:nonNegativeInteger">
+        </xs:attribute>
+        <xs:attribute name="SensationMin" type="coords">
+        </xs:attribute>
+        <xs:attribute name="SensationMax" type="coords">
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_DamageArea">
+        <xs:annotation>
+            <xs:documentation>
+                Область повреждения.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Type" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Тип. Значения: Engine, FuelTank.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Engine"/>
+                    <xs:enumeration value="FuelTank"/>
+                    <xs:enumeration value="Suspension"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Min" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Нижняя правая задняя вершина куба.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Max" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Верхняя левая передняя вершина куба.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Кость из иерархии физической модели, к которой крепится зона. Если параметр не указан, то это рутовая кость физ. модели.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Camera">
+        <xs:annotation>
+            <xs:documentation>
+                Внешняя камера.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="Cockpit" type="T_Cockpit" minOccurs="1"/>
+        </xs:all>
+        <xs:attribute name="Center" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Точка, куда направлена внешняя камера.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="RadiusMultiplier">
+            <xs:annotation>
+                <xs:documentation>
+                    Скейл расстояния до Center. По умолчанию: 1. На больших траках чаще всего 1.1, на скаутах 0.8.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Radius">
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Кость из иерархии физической модели, к которой крепится камера. Если параметр не указан, то это рутовая кость физ. модели.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Cockpit">
+        <xs:annotation>
+            <xs:documentation>
+                Внутренняя камера и лобовое стекло.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="Rear" type="T_Rear"/>
+            <xs:element name="Mirror" type="T_Mirror"/>
+        </xs:choice>
+        <xs:attribute name="WindshieldDetailDensity" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Тайлинг детальной текстуры (одна текстура на все траки, сколы на стекле). По умолчанию: 0.4
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="WindshieldDiffuseTexture" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Карта диффуза текстуры стекла (та же, что на внешнем стекле трака). Расположена в папке .../textures/.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="WindshieldShadingTexture" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Карта шейдинга текстуры стекла (та же, что на внешнем стекле трака). Расположена в папке .../textures/.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="WindshieldDiffuseCleanAlpha" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Прозрачность альфы. По умолчанию: 0.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="WindshieldDiffuseAlphaContrast" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Контраст альфы. По умолчанию: 1.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ViewPos" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Дефолтная позиция внутренней камеры.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ViewDir" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Дефолтный вектор направления внутренней камеры.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="LimitsHor" type="diapas">
+            <xs:annotation>
+                <xs:documentation>
+                    Границы вращения камеры по горизонтали. Значение в радианах.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="LimitsVer" type="diapas">
+            <xs:annotation>
+                <xs:documentation>
+                    Границы вращения камеры по вертикали. Значение в радианах.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ZoomViewDirOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Изменение вектора направления при увеличении камерой (zoom).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ZoomViewPosOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Смещение камеры при увеличении камерой (zoom).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Rear">
+        <xs:annotation>
+            <xs:documentation>
+                Настройки “высовывания из окна” при взгляде назад.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="HorTransitionStart" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Угол в радианах, при котором начинается смещение камеры.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="HorTransitionEnd" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Угол в радианах, при котором заканчивается смещение камеры.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="LimitsVer" type="diapas">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальные границы вращения камеры по вертикали после смещения камеры. Значение в радианах.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="RollAngle" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный угол поворота по Ox (twist rotation, наклон головы влево-вправо). Значение этого угла ноль, когда камера повернута на HorTransitionStart и RollAngle, когда камера повернута на HorTransitionEnd. Значения в градусах.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ViewDir" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор направления камеры при взгляде назад.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ViewPosOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг камеры при взгляде назад.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Mirror">
+        <xs:annotation>
+            <xs:documentation>
+                Зеркало.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="SecondaryView" type="T_SecondaryView" minOccurs="0"/>
+        </xs:all>
+        <xs:attribute name="MeshFrame" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя меша заданное в fbx-файле.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Pos" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение центра зеркала. Для выпуклых зеркал желательно задавать центр в плоскости основания, а не вершины (см. иллюстрацию ниже).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ClipDir" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор нормали геометрии зеркала, направленный в сторону глаз водителя.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ClipOffset" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг плоскости отсечения по направлению ClipDir. Этот сдвиг нужен, чтобы геометрия самого зеркала не попала в камеру. Значение по умолчанию: 0.025.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ReflectionDir" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор нормали плоскости отражения зеркала, направленный в сторону глаз водителя. По умолчанию совпадает с ClipDir.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Size" type="diapas" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Ширина и высота поверхности зеркала. Рекомендуется задавать на 0.01-0.02 больше реальных размеров, чтобы изображение не растягивалось вблизи краев зеркала.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="FOVScale">
+            <xs:annotation>
+                <xs:documentation>
+                    Скейл поля зрения. Фактически это скейл параметра Size, используемый при расчёте frustum камеры зеркала. По умолчанию: 1.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="LookAtOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг позиции Pos при построении Frustum. В координатах трака. Этот параметр нужен, когда в отражение попадают нежелательные элементы геометрии, типа крепежа зеркала.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="CurveAngle" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Кривизна текстуры в градусах. Нужен для того, чтобы объекты в зеркалах выглядели дальше, чем они есть. Не устанавливайте слишком большое значение (рекомендуется около 60), иначе будут видны потяги вблизи краев. Значение по умолчанию: 60.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UnskinnedCoordinates" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Система координат, в которой заданы параметры зеркала. false означает, что координаты рассчитаны с учетом первоначальных трансформаций костей скелета трака, true - из положений вертексов зеркала. Это два независимых алгоритма расчета координат, которые чаще всего неотличимы.
+                    Дефолтное значение: false
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_SecondaryView">
+        <xs:annotation>
+            <xs:documentation>
+                Зависимое зеркало.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="MeshFrame" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя меша заданное в fbx-файле.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Pos" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение центра зеркала. Для выпуклых зеркал желательно задавать центр в плоскости основания, а не вершины.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ClipDir" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор нормали геометрии зеркала, направленный в сторону глаз водителя.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Size" type="diapas">
+        </xs:attribute>
+        <xs:attribute name="ClipOffset" type="xs:decimal">
+        </xs:attribute>
+        <xs:attribute name="FOVScale">
+            <xs:annotation>
+                <xs:documentation>
+                    Скейл поля зрения. FOVScale(secondary) / FOVScale(primary) - это часть текстуры, которую будет использовать зависимое зеркало. Не может быть больше FOVScale основного зеркала.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="CurveAngle" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Кривизна текстуры в градусах. Нужен для того, чтобы объекты в зеркалах выглядели дальше, чем они есть. Не устанавливайте слишком большое значение (рекомендуется около 60), иначе будут видны потяги вблизи краев. Значение по умолчанию: 60.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UnskinnedCoordinates" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Система координат, в которой заданы параметры зеркала. false означает, что координаты рассчитаны с учетом первоначальных трансформаций костей скелета трака, true - из положений вертексов зеркала. Это два независимых алгоритма расчета координат, которые чаще всего неотличимы.
+                    Дефолтное значение: false.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ReflectionDir" type="coords">
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Axles">
+        <xs:annotation>
+            <xs:documentation>
+                Секция, содержащая описания мостов.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="Axle" type="T_Axle" minOccurs="1"/>
+        </xs:choice>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Axle">
+        <xs:annotation>
+            <xs:documentation>
+                Мост.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Frame" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Кость, на которую заскинен мост.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="IsIndependent" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Является ли подвеска независимой или нет.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Landmark">
+        <xs:annotation>
+            <xs:documentation>
+                Моделька на карте.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Mesh" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Путь к fbx файлу модельки, относительно папки .../meshes
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MinScale">
+            <xs:annotation>
+                <xs:documentation>
+                    Минимальный скейл модельки, когда камера наезжает.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="MaxScale">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный скейл модельки, когда камера отъезжает.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0.01"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_GameData">
+        <xs:annotation>
+            <xs:documentation>
+                Информация о взаимодействии трака с окружающим миром.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="WinchSocket" type="T_WinchSocket" maxOccurs="1"/>
+            <xs:element name="UiDesc" type="T_UiDesc" maxOccurs="1"/>
+            <xs:element name="CustomizationCameras" type="T_CustomizationCameras" maxOccurs="1"/>
+            <xs:element name="CraneSocket" type="T_CraneSocket"/>
+            <xs:element name="AddonSockets" type="T_AddonSockets"/>
+            <xs:element name="AddonSlots" type="T_AddonSlots"/>
+        </xs:choice>
+        <xs:attribute name="Country">
+            <xs:annotation>
+                <xs:documentation>
+                    Регион. Значения US, RU.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="US"/>
+                    <xs:enumeration value="RU"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Price" type="xs:nonNegativeInteger">
+            <xs:annotation>
+                <xs:documentation>
+                    Цена трака. Не включает цену модулей.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UnlockByExploration" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Разлочивается разведкой. То есть, до тех пор, пока не найдешь трак на карте, он залочен в магазине. Значения true, false.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UnlockByRank" type="xs:nonNegativeInteger">
+            <xs:annotation>
+                <xs:documentation>
+                    Разлочивается рангом.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ExcludeAddons" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Исключение конкретного аддона из типа (несколько аддонов могут иметь один тип. Трак взаимодействует именно с типами, а не с отдельными аддонами). Значения: список названий xml-файлов аддонов.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_WinchSocket">
+        <xs:annotation>
+            <xs:documentation>
+                Место крепления лебедки.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Pos" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение места крепления лебедки.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Кость из иерархии физ. модели, к которой крепится место крепления лебедки. Если параметр не указан, то это рутовая кость.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_UiDesc">
+        <xs:annotation>
+            <xs:documentation>
+                Блок UI.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="UiDesc" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Описание трака. Небольшое описание, что это за машина. Примечание: Для этого атрибута вы можете задать просто текстовое значение, в двойных кавычках. Например, вы можете написать "Какой-то текст" как такое значение и именно этот текст и будет отображен в UI. Или, вы можете использовать в этом поле строковый идентификатор (например, "UI_STRING_IDENTIFIER") и, с его помощью, локализовать значение этого поля на разные языки.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UiIcon30x30">
+            <xs:annotation>
+                <xs:documentation>
+                    Иконка типа трака (маленькая версия). Используется много где, например, на левой панели карты или в подсказках, на экране Стоянка, в Магазине Грузовиков. Иконка белого цвета.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="scoutVehicleImg30"/>
+                    <xs:enumeration value="offroadVehicleImg30"/>
+                    <xs:enumeration value="highwayVehicleImg30"/>
+                    <xs:enumeration value="heavyVehicleImg30"/>
+                    <xs:enumeration value="heavyDutyVehicleImg30"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="UiIcon40x40">
+            <xs:annotation>
+                <xs:documentation>
+                    Иконка типа трака (большая версия с обводкой). Используется на самой карте, например, и возможно еще где-то. Иконка белого цвета с черной обводкой. Возможные значения:
+                    ○ scoutVehicleImg - иконка для типа машин “Скаут”.
+                    ○ offroadVehicleImg - иконка для типа машин “Вездеход”.
+                    ○ highwayVehicleImg - иконка для машин “Шоссейного” типа.
+                    ○ heavyVehicleImg - иконка для машин “Тяжелого” типа.
+                    ○ heavyDutyVehicleImg - иконка для машин “Грузового” типа.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="scoutVehicleImg"/>
+                    <xs:enumeration value="offroadVehicleImg"/>
+                    <xs:enumeration value="highwayVehicleImg"/>
+                    <xs:enumeration value="heavyVehicleImg"/>
+                    <xs:enumeration value="heavyDutyVehicleImg"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="UiIcon328x458" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Реалистичная фотография-скриншот из игры с машиной в выгодном ракурсе. Используется только для карточек-витрин в игровом магазине.
+                    Размер картинки: 328x458. Изображение в формате .png располагается в папке /ui/textures/.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UiIconLogo" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Логотип производителя, используется только в магазине, на карточках машин. Иконка белого цвета на прозрачном фоне размером 80x80.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UiName" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Название трака. Примечание: Для этого атрибута вы можете задать просто текстовое значение, в двойных кавычках. Например, вы можете написать "Какой-то текст" как такое значение и именно этот текст и будет отображен в UI. Или, вы можете использовать в этом поле строковый идентификатор (например, "UI_STRING_IDENTIFIER") и, с его помощью, локализовать значение этого поля на разные языки.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_CustomizationCameras">
+        <xs:annotation>
+            <xs:documentation>
+                Секция описания камер гаража.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="CameraPos" type="T_CameraPos" minOccurs="1"/>
+        </xs:choice>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_CameraPos">
+        <xs:annotation>
+            <xs:documentation>
+                Определение камеры.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Name">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя камеры в гараже. Значения addon_1, addon_2, side_r, side_l, roof, hoods, wheels, default, rear.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="sticker"/>
+                    <xs:enumeration value="sticker_1"/>
+                    <xs:enumeration value="sticker_2"/>
+                    <xs:enumeration value="sticker_3"/>
+                    <xs:enumeration value="roof_sticker"/>
+                    <xs:enumeration value="capote_sticker"/>
+                    <xs:enumeration value="mirror_mount"/>
+                    <xs:enumeration value="glass_sticker"/>
+                    <xs:enumeration value="door_r_sticker"/>
+                    <xs:enumeration value="door_l_sticker"/>
+                    <xs:enumeration value="bubble_head"/>
+                    <xs:enumeration value="hood_ornament"/>
+                    <xs:enumeration value="addon_1"/>
+                    <xs:enumeration value="addon_2"/>
+                    <xs:enumeration value="side_r"/>
+                    <xs:enumeration value="side_l"/>
+                    <xs:enumeration value="roof"/>
+                    <xs:enumeration value="hoods"/>
+                    <xs:enumeration value="wheels"/>
+                    <xs:enumeration value="default"/>
+                    <xs:enumeration value="rear"/>
+                    <xs:enumeration value="curtain"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="FOV" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    FOV, значение по умолчанию 50.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Position" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Позиция камеры.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="InterestPosition" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Позиция точки интереса.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MaxXRotation" type="xs:nonNegativeInteger">
+            <xs:annotation>
+                <xs:documentation>
+                    Диапазон вращения камеры по горизонтали [-MaxXRotation; MaxXRotation]. Значение по умолчанию 360.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MaxYRotation" type="xs:nonNegativeInteger">
+            <xs:annotation>
+                <xs:documentation>
+                    Диапазон вращения камеры по вертикали [-MaxYRotation; MaxYRotation]. Значение по умолчанию 0.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="MaxZoom" type="xs:nonNegativeInteger">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный зум.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Interior" type="xs:boolean">
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_CraneSocket">
+        <xs:annotation>
+            <xs:documentation>
+                Место, за которое может цепляться кран.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Pos" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение сокета крана
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Кость из иерархии физ. модели, к которой крепится сокет крана. Если параметр не указан, то это рутовая кость.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_AddonSockets">
+        <xs:annotation>
+            <xs:documentation>
+                Секция определения взаимного расположения аддонов трака.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="Socket" type="T_Socket" minOccurs="1"/>
+        </xs:choice>
+        <xs:attribute name="DefaultAddon" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя xml-файла дефолтного аддона. Используется, если аддон должен быть установлен при покупке трака.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="RequiredAddonIfNoConflicts" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсутствует в документации.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсутствует в документации.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_Socket">
+        <xs:annotation>
+            <xs:documentation>
+                Место крепления аддона на траке.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="ExtraParent" type="T_ExtraParent" minOccurs="0"/>
+            <xs:element name="AddonsShift" type="T_AddonsShift" minOccurs="0"/>
+        </xs:choice>
+        <xs:attribute name="Names" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имена типов аддонов, которые описываются.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Offset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Положение точки крепления в координатах fbx трака.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Кость из иерархии физ. модели, к которой крепится сокет. Если параметр не указан, то это рутовая кость.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="NamesBlock" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имена типов аддонов, которые блокируются при установке аддона из этого сокета.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="InCockpit" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсутствует в документации.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="CablesName" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсутствует в документации.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="TruckCablesPos" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсутствует в документации.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Dir" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсутствует в документации.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UpDir" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсутствует в документации.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_ExtraParent">
+        <xs:annotation>
+            <xs:documentation>
+                Явное прикрепление кости аддона к кости трака.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Frame" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости физ. модели трака, к которой крепится кость аддона
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Offset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Смещение кости аддона при установке на трак
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_AddonsShift">
+        <xs:annotation>
+            <xs:documentation>
+                Сдвиг точки установки аддона (трейлера), если уже установлен другой аддон.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Types" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя типа аддона, при установке которого сдвинется описываемый аддон
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Offset" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Смещение кости аддона при установке на трак.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="TrailerNamesBlock" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Запрет установки трейлера при установленной паре аддонов со сдвигом. Нужен, например, если установка крана сдвигает кузов настолько что он мешает установке трейлера.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_AddonSlots">
+        <xs:annotation>
+            <xs:documentation>
+                
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="InitialOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсутствует в документации.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="OffsetStep" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсутствует в документации.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Quantity" type="xs:decimal">
+            <xs:annotation>
+                <xs:documentation>
+                    Отсутствует в документации.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_ControlledConstraints">
+        <xs:annotation>
+            <xs:documentation>
+                Секция описания управляемых констрейнов.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="Constraint" type="T_ControlledConstraint" minOccurs="1"/>
+        </xs:choice>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_ControlledConstraint">
+        <xs:annotation>
+            <xs:documentation>
+                Описание способа управления конкретным констрейнтом физ.модели.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Id" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Обязательный атрибут, который ничего не делает (старая логика удалена, новая еще не появилась).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="IsLinkedSteering" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Атрибут синхронизирующий поведение мотора констрейна с рулевом управлением.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя констрейнта физ модели, которому назначается управление
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_AutomaticIK">
+        <xs:annotation>
+            <xs:documentation>
+                Секция описания костей с инверсной кинематикой.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="IKBone" type="T_IKBone" minOccurs="1"/>
+        </xs:choice>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_IKBone">
+        <xs:annotation>
+            <xs:documentation>
+                Кость инверсной кинематики.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="IKJoint" type="T_IKJoint"/>
+            <xs:element name="IKBone" type="T_IKBone"/>
+        </xs:choice>
+        <xs:attribute name="ModelFrame" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="ParentFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости физ.модели, к которой крепится рут ик-цепочки. Используется только с рутом и обязателен.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="AttachToFrame" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Имя кости физ.модели, к которой крепится последняя кость ик-цепочки. Используется только с последней костью и обязателен.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="AttachOffset" type="coords">
+            <xs:annotation>
+                <xs:documentation>
+                    Сдвиг “сустава”. По умолчанию (0; 0; 0).
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_IKJoint">
+        <xs:annotation>
+            <xs:documentation>
+                Сустав ИК-кости.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="AxisLocal" type="coords" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Вектор направления
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="Type" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Тип сустава. Значения:
+                    Hinge - вращение вокруг оси AxisLocal.
+                    Slider- линейное перемещение по одной вдоль оси AxisLocal.
+                    Hinge2 - вращение вокруг осей перпендикулярных AxisLocal.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Hinge"/>
+                    <xs:enumeration value="Slider"/>
+                    <xs:enumeration value="Hinge2"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:simpleType name="coords">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\((-?\d*(\.\d*)?;\s?){2}-?\d*(\.\d*)?\)"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="color">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="g?\((\d*;\s?){2}\d*\)(\s?x\s?\d*(\.\d*)?)?"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="diapas">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\(-?\d*(\.\d*)?;\s?-?\d*(\.\d*)?\)"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="mapFile">
+        <xs:restriction base="xs:string">
+            <xs:pattern value=".*__(s_d_a|d|d_a|n_d|sh_d|em_d)\.tga"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
