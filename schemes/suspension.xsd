@@ -1,0 +1,321 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:attributeGroup name="inheritAttrs">
+        <xs:attribute name="_inheritRemove" type="xs:boolean"/>
+        <xs:attribute name="_noinherit" type="xs:boolean"/>
+        <xs:attribute name="_template" type="xs:string"/>
+    </xs:attributeGroup>
+
+    <xs:element name="SuspensionSetVariants" type="T_SuspensionSetVariants"/>
+    
+    <xs:complexType name="T_SuspensionSetVariants">
+        <xs:annotation>
+            <xs:documentation>
+                <![CDATA[ 
+                <p><b>Рутовый тег файла класса подвесок.</b></p>
+                <hr/>
+                <p>Теги:
+                    <ul>
+                        <li><b>SuspensionSet</b></li>
+                    </ul>
+                </p>
+                <hr/>
+                <p>Атрибуты: отсутствуют.</p>
+                ]]>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="SuspensionSet" type="T_SuspensionSet" minOccurs="1"/>
+        </xs:choice>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_SuspensionSet">
+        <xs:annotation>
+            <xs:documentation>
+                <![CDATA[
+                <p><b>Секция подвесок</b></p>
+                <p>Эта секция содержит набор подвесок для всех осей трака.</p>
+                <hr/>
+                <p>Теги:
+                    <ul>
+                        <li><b>Suspension*</b> [front]</li>
+                        <li><b>Suspension*</b> [rear]</li>
+                        <li><b>GameData</b></li>
+                    </ul>
+                </p>
+                <hr/>
+                <p>Атрибуты:
+                    <ul>
+                        <li><b>Name*</b> (string)</li>
+                        <li><b>UiName</b> (string)</li>
+                        <li><b>DamageCapacity</b> (int) [0; 64000]</li>
+                        <li><b>CriticalDamageThreshold</b> (float) [0; 0.999]</li>
+                        <li><b>BrokenWheelDamageMultiplier</b> (float) [0; 100]</li>
+                    </ul>
+                </p>
+                ]]>    
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="Suspension" type="T_SuspensionFront" minOccurs="1"/>
+            <xs:element name="Suspension" type="T_SuspensionRear" minOccurs="1"/>
+            <xs:element name="GameData" type="T_GameData" minOccurs="1"/>
+        </xs:all>
+        <xs:attribute name="Name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    <![CDATA[ 
+                    <p><b>Имя набора подвесок.</b></p>
+                    ]]>
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="DamageCapacity">
+            <xs:annotation>
+                <xs:documentation>
+                    <![CDATA[ 
+                    <p><b>Размер допустимого ущерба.</b></p>
+                    <p>По умолчанию 0.</p>
+                    <p>Диапазон значений [0; 64000].</p>
+                    ]]>
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="64000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="CriticalDamageThreshold">
+            <xs:annotation>
+                <xs:documentation>
+                    <![CDATA[ 
+                    <p><b>Порог критического урона.</b></p>
+                    <p>По умолчанию 0.7.</p>
+                    <p>Диапазон значений [0; 0.999].</p>
+                    ]]>
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="0.999"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="BrokenWheelDamageMultiplier">
+            <xs:annotation>
+                <xs:documentation>
+                    <![CDATA[ 
+                    <p><b>Коэффициент увеличения повреждения подвески при пробитом колесе.</b></p>
+                    <p>По умолчанию 1.</p>
+                    <p>Диапазон значений [0; 100].</p>
+                    <p><i>Когда удар приходит в конкретное колесо - если оно Broken, тогда урон в подвеску умножается на этот коэффициент.</i></p>
+                    ]]>
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="100"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_SuspensionFront">
+        <xs:annotation>
+            <xs:documentation>
+                Определяет взаимодействие колеса с траком.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="WheelType" type="xs:string" use="required" fixed="front">
+            <xs:annotation>
+                <xs:documentation>
+                    Тип колеса.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="A_Suspension"/>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_SuspensionRear">
+        <xs:annotation>
+            <xs:documentation>
+                Определяет взаимодействие колеса с траком.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="WheelType" type="xs:string" use="required" fixed="rear">
+            <xs:annotation>
+                <xs:documentation>
+                    Тип колеса.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="A_Suspension"/>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:attributeGroup name="A_Suspension">
+        <xs:attribute name="Height" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Высота подвески. Сдвиг колеса по оси -OY относительно определенного в траке атрибутом Pos тега Wheel. Диапазон значений [-1000;1000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-1000"/>
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Strength" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Жесткость подвески.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="Damping">
+            <xs:annotation>
+                <xs:documentation>
+                    Затухание. Диапазон значений [0; 1000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SuspensionMin" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Минимальный ход подвески (Позиция, которую колесо может принять при полной просадке подвески). Диапазон значений [-1000; 1000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-1000"/>
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="SuspensionMax">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный ход подвески (Позиция, которую может принять колесо, если подвеска в рабочем состоянии и ее жесткость равна нулю, когда колесо висит в воздухе). Значение по умолчанию 1. Диапазон значений [-1000; 1000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-1000"/>
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="BrokenSuspensionMax" use="required">
+            <xs:annotation>
+                <xs:documentation>
+                    Максимальный ход сломанной подвески. Диапазон значений [-1000; 1000].
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:decimal">
+                    <xs:minInclusive value="-1000"/>
+                    <xs:maxInclusive value="1000"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:attributeGroup>
+
+    <xs:complexType name="T_GameData">
+        <xs:annotation>
+            <xs:documentation>
+                Информация о взаимодействии подвески с окружающим миром.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="UiDesc" type="T_UiDesc" minOccurs="1"/>
+        </xs:all>
+        <xs:attribute name="Price">
+            <xs:annotation>
+                <xs:documentation>
+                   Цена. 
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:int">
+                    <xs:minInclusive value="0"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="UnlockByExploration" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Разлочивается разведкой. То есть, до тех пор, пока не найдешь подвеску на карте, она залочена в магазине. Значения true, false
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UnlockByRank">
+            <xs:annotation>
+                <xs:documentation>
+                    Разлочивается рангом.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:int">
+                    <xs:minInclusive value="1"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+
+    <xs:complexType name="T_UiDesc">
+        <xs:annotation>
+            <xs:documentation>
+                Блок UI.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="UiDesc" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Описание подвески. Примечание: Для этого атрибута вы можете задать просто текстовое значение, в двойных кавычках. Например, вы можете написать "Какой-то текст" как такое значение и именно этот текст и будет отображен в UI. Или, вы можете использовать в этом поле строковый идентификатор (например, "UI_STRING_IDENTIFIER") и, с его помощью, локализовать значение этого поля на разные языки.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UiName" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Название подвески. Примечание: Для этого атрибута вы можете задать просто текстовое значение, в двойных кавычках. Например, вы можете написать "Какой-то текст" как такое значение и именно этот текст и будет отображен в UI. Или, вы можете использовать в этом поле строковый идентификатор (например, "UI_STRING_IDENTIFIER") и, с его помощью, локализовать значение этого поля на разные языки.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UiIcon30x30" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Нет в документации
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="UiIcon40x40" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Нет в документации
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="inheritAttrs"/>
+    </xs:complexType>
+</xs:schema>

@@ -743,7 +743,7 @@
             </xs:annotation>
             <xs:simpleType>
                 <xs:restriction base="xs:string">
-                    <xs:pattern value="\((-?\d+(\.\d+)?;\s?){2}\d+(\.\d+)?\)"/>
+                    <xs:pattern value="\((-?(\d+|\d+\.\d+|\d+\.|\.\d+);\s?){2}(\d+|\d+\.\d+|\d+\.|\.\d+)\)"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
@@ -3275,7 +3275,7 @@
 
     <xs:simpleType name="coords">
         <xs:restriction base="xs:string">
-            <xs:pattern value="\((-?\d*(\.\d*)?;\s?){2}-?\d*(\.\d*)?\)"/>
+            <xs:pattern value="\((-?(\d+|\d+\.\d+|\d+\.|\.\d+);\s?){2}-?(\d+|\d+\.\d+|\d+\.|\.\d+)\)"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -3287,7 +3287,7 @@
 
     <xs:simpleType name="diapas">
         <xs:restriction base="xs:string">
-            <xs:pattern value="\(-?\d*(\.\d*)?;\s?-?\d*(\.\d*)?\)"/>
+            <xs:pattern value="\(-?(\d+|\d+\.\d+|\d+\.|\.\d+);\s?-?(\d+|\d+\.\d+|\d+\.|\.\d+)\)"/>
         </xs:restriction>
     </xs:simpleType>
 
