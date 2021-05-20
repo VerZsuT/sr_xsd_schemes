@@ -5,6 +5,15 @@
         <xs:attribute name="_template" type="xs:string"/>
     </xs:attributeGroup>
 
+    <xs:element name="_templates">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:any namespace="##local" processContents="lax"/>
+            </xs:choice>
+            <xs:attribute name="Include" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="SuspensionSetVariants" type="T_SuspensionSetVariants"/>
     
     <xs:complexType name="T_SuspensionSetVariants">

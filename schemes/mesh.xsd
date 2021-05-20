@@ -9,6 +9,15 @@
         <xs:attribute name="_template" type="xs:string"/>
     </xs:attributeGroup>
 
+    <xs:element name="_templates">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:any namespace="##local" processContents="lax"/>
+            </xs:choice>
+            <xs:attribute name="Include" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
     <xs:complexType name="CombineXMeshType">
         <xs:annotation>
             <xs:documentation>
