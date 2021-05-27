@@ -1,5 +1,3 @@
-<?xml version = "1.0"?>
-
 <xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema">
     <xs:element name="CombineXMesh" type="CombineXMeshType" />
 
@@ -21,7 +19,17 @@
     <xs:complexType name="CombineXMeshType">
         <xs:annotation>
             <xs:documentation>
-                Рутовый тег xml-файла меша.
+                <![CDATA[ 
+                <p><b>Рутовый тег xml-файла меша.</b></p>
+                <hr/>
+                <p>Теги:
+                    <ul>
+                        <li><b>SocketPoints</b></li>
+                        <li><b>Material*</b></li>
+                        <li><b>MaterialOverrides</b></li>
+                    </ul>
+                </p>
+                ]]>
             </xs:documentation>
         </xs:annotation>
         <xs:choice maxOccurs="unbounded">
@@ -42,7 +50,15 @@
     <xs:complexType name="T_SocketPoints">
         <xs:annotation>
             <xs:documentation>
-                Секция описания точек крепления валов.
+                <![CDATA[ 
+                <p><b>Секция описания точек крепления валов.</b></p>
+                <hr/>
+                <p>Теги:
+                    <ul>
+                        <li><b>SocketPoint*</b></li>
+                    </ul>
+                </p>
+                ]]>
             </xs:documentation>
         </xs:annotation>
         <xs:choice maxOccurs="unbounded">
@@ -54,20 +70,35 @@
     <xs:complexType name="T_SocketPoint">
         <xs:annotation>
             <xs:documentation>
-                Точка крепления вала.
+                <![CDATA[ 
+                <p><b>Точка крепления вала.</b></p>
+                <hr/>
+                <p>Атрибуты:
+                    <ul>
+                        <li><b>Name</b> [строка]</li>
+                        <li><b>Post</b> [координаты]</li>
+                    </ul>
+                </p>
+                ]]>
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="Name" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Имя, для описания вала в классе трака
+                    <![CDATA[ 
+                    <p><b>Имя, для описания вала в классе трака</b></p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="Pos" type="coords">
             <xs:annotation>
                 <xs:documentation>
-                    Позиция. Вид: (x; y; z). x, y, z - дробные.
+                    <![CDATA[ 
+                    <p><b>Позиция.</b></p>
+                    <hr/>
+                    <p>Вид: (X; Y; Z).</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -77,20 +108,58 @@
     <xs:complexType name="T_Material">
         <xs:annotation>
             <xs:documentation>
-                Материал
+                <![CDATA[ 
+                <p><b>Материал.</b></p>
+                <hr/>
+                <p>Атрибуты:
+                    <ul>
+                        <li><b>Name</b> [строка]</li>
+                        <li><b>AlbedoMap</b> [файл]</li>
+                        <li><b>AlphaKill</b> [логическое]</li>
+                        <li><b>Blending</b> ('alpha' | 'none' | 'additive')</li>
+                        <li><b>NormalMap</b> [файл]</li>
+                        <li><b>NormalScale</b> [число]</li>
+                        <li><b>ShadingMap</b> [файл]</li>
+                        <li><b>MetalnessScale</b> [число]</li>
+                        <li><b>MetalnessBias</b> [число]</li>
+                        <li><b>RoughnessScale</b> [число]</li>
+                        <li><b>RoughnessBias</b> [число]</li>
+                        <li><b>AmbientOcclusionIntensyty</b> [число]</li>
+                        <li><b>ReflectivityMultiplier</b> [число]</li>
+                        <li><b>EmissiveMap</b> [файл]</li>
+                        <li><b>SnowUpIntensity</b> [число]</li>
+                        <li><b>SnowUpNormalsSpace</b> ('world' | 'object' | 'foliage')</li>
+                        <li><b>SnowUpNoiseIntensity</b> [число]</li>
+                        <li><b>SnowUpNoiseScale</b> [число]</li>
+                        <li><b>SnowUpAngleRange</b> [число]</li>
+                        <li><b>SnowUpFlatten</b> [число]</li>
+                        <li><b>SnowifyNoiseIntensity</b> [число]</li>
+                        <li><b>SnowifyNoiseIntensityShift</b> [число]</li>
+                        <li><b>SnowifyNoiseTilingMult</b> [число]</li>
+                        <li><b>ForceSnowUnderwater</b> [логическое]</li>
+                        <li><b>DOFOrder</b> {DistanceBased}</li>
+                    </ul>
+                </p>
+                ]]>
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="Name" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Имя, соответствующее имени материала в Fbx файле.
+                    <![CDATA[ 
+                    <p><b>Имя, соответствующее имени материала в Fbx файле.</b></p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="AlbedoMap" type="mapFile">
             <xs:annotation>
                 <xs:documentation>
-                    Карта с базовым цветом поверхности (RGB), опциональный альфа-канал может быть использован либо как маска жесткой прозрачности (см. AlphaKill ниже), либо как маска полупрозрачности (см. Blending ниже).
+                    <![CDATA[ 
+                    <p><b>Карта с базовым цветом поверхности (RGB)</b></p>
+                    <hr/>
+                    <p>Опциональный альфа-канал может быть использован либо как маска жесткой прозрачности, либо как маска полупрозрачности.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -102,9 +171,12 @@
         <xs:attribute name="AlphaKill" type="xs:boolean">
             <xs:annotation>
                 <xs:documentation>
-                    Режим жесткой прозрачности по ч/б маске из альфа-канала текстуры AlbedoMap. 
-                    Нужен, например, чтобы сделать защитную сетку радиатора. 
-                    Значение по умолчанию: false.
+                    <![CDATA[ 
+                    <p><b>Режим жесткой прозрачности по ч/б маске из альфа-канала текстуры AlbedoMap.</b></p>
+                    <hr/>
+                    <p>Нужен, например, чтобы сделать защитную сетку радиатора.</p>
+                    <p>Значение по умолчанию: false.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -112,7 +184,13 @@
             <xs:simpleType>
                 <xs:annotation>
                     <xs:documentation>
-                        Режим смешивания материалов поверхностей при их отрисовке. Значение по умолчанию: none. Значение alpha включает полупрозрачность. Значение additive не используется в траках.
+                        <![CDATA[ 
+                        <p><b>Режим смешивания материалов поверхностей при их отрисовке.</b></p>
+                        <hr/>
+                        <p>Значение по умолчанию: none.</p>
+                        <p>Значение <i>alpha</i> включает полупрозрачность.</p>
+                        <p>Значение <i>additive</i> не используется в траках.</p>
+                        ]]>
                     </xs:documentation>
                 </xs:annotation>
                 <xs:restriction base="xs:string">
@@ -125,80 +203,124 @@
         <xs:attribute name="NormalMap" type="mapFile">
             <xs:annotation>
                 <xs:documentation>
-                    Карта нормалей в тангент-спейсе (RGB). Зеленый цвет соответствует низам выпуклостей.
+                    <![CDATA[ 
+                    <p><b>Карта нормалей в тангент-спейсе (RGB)</b></p>
+                    <hr/>
+                    <p>Зеленый цвет соответствует низам выпуклостей.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="NormalScale" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Коэффициент влияния текстуры NormalMap. По умолчанию: 1.
+                    <![CDATA[ 
+                    <p><b>Коэффициент влияния текстуры NormalMap.</b></p>
+                    <hr/>
+                    <p>По умолчанию: 1.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="ShadingMap" type="mapFile">
             <xs:annotation>
                 <xs:documentation>
-                    Карта данных PBR-шейдинга:
-                    R - metalness: “металличность” поверхности (0 = диэлектрик, 1 = металл)
-                    G - roughness: неровность поверхности (0 = идеально гладкая поверхность, 1 = предельно неровная поверхность)
-                    B - ambient occlusion mask: маска затенения рассеянного света (0 = полностью затенено, 1 = не затенено).
+                    <![CDATA[ 
+                    <p><b>Карта данных PBR-шейдинга.</b></p>
+                    <hr/>
+                    <p><i>R</i> - metalness: “металличность” поверхности (0 = диэлектрик, 1 = металл)</p>
+                    <p><i>G</i> - roughness: неровность поверхности (0 = идеально гладкая поверхность, 1 = предельно неровная поверхность)</p>
+                    <p><i>B</i> - ambient occlusion mask: маска затенения рассеянного света (0 = полностью затенено, 1 = не затенено).</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="MetalnessScale" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Множитель на значение metalness из текстуры ShadingMap.Значение по умолчанию: 1.
+                    <![CDATA[ 
+                    <p><b>Множитель на значение metalness из текстуры ShadingMap.</b></p>
+                    <hr/>
+                    <p>Значение по умолчанию: 1.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="MetalnessBias" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Сдвиг значения metalness из текстуры ShadingMap (metalness = metalness + MetalnessBias). Значение по умолчанию: 0.
+                    <![CDATA[ 
+                    <p><b>Сдвиг значения metalness из текстуры ShadingMap (metalness = metalness + MetalnessBias).</b></p>
+                    <hr/>
+                    <p>Значение по умолчанию: 0.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="RoughnessScale" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Множитель на значение roughness из текстуры ShadingMap.Значение по умолчанию: 1.
+                    <![CDATA[ 
+                    <p><b>Множитель на значение roughness из текстуры ShadingMap.</b></p>
+                    <p>Значение по умолчанию: 1.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="RoughnessBias" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Сдвиг значения roughness из текстуры ShadingM
+                    <![CDATA[ 
+                    <p><b>Сдвиг значения metalness из текстуры ShadingMap (roughness = roughness + RoughnessBias).</b></p>
+                    <hr/>
+                    <p>Значение по умолчанию: 0.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="AmbientOcclusionIntensicy" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Коэффициент влияния маски затенения рассеянного света из текстуры ShadingMap. Значение по умолчанию: 1.
+                    <![CDATA[ 
+                    <p><b>Коэффициент влияния маски затенения рассеянного света из текстуры ShadingMap.</b></p>
+                    <hr/>
+                    <p>Значение по умолчанию: 1.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="ReflectivityMultiplier" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Множитель, усиливающий интенсивность отражений на материале. Значение по умолчанию: 1.
+                    <![CDATA[ 
+                    <p><b>Множитель, усиливающий интенсивность отражений на материале.</b></p>
+                    <hr/>
+                    <p>Значение по умолчанию: 1.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="EmissiveMap" type="mapFile">
             <xs:annotation>
                 <xs:documentation>
-                    Цвет самосвечения поверхности (RGB). При отсутствии текстуры поверхность не обладает самосвечением. Эффект самосвечения не поддержан для полупрозрачных PBR-материалов (стекла и т.д.). Самосвечение включается с включением зажигания.
+                    <![CDATA[ 
+                    <p><b>Цвет самосвечения поверхности (RGB).</b></p>
+                    <hr/>
+                    <p>При отсутствии текстуры поверхность не обладает самосвечением.</p>
+                    <p>Эффект самосвечения не поддержан для полупрозрачных PBR-материалов (стекла и т.д.).</p>
+                    <p>Самосвечение включается с включением зажигания.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="SnowUpIntensity" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Интенсивность снежного слоя на поверхности. По умолчанию: 10.
+                    <![CDATA[
+                    <p><b>Интенсивность снежного слоя на поверхности.</b></p>
+                    <hr/>
+                    <p>По умолчанию: 10.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -206,7 +328,13 @@
             <xs:simpleType>
                 <xs:annotation>
                     <xs:documentation>
-                        Режим наложения снега. Для двигающихся, динамических объектов следует использовать режим "object". Значение по умолчанию: world. Значения: [world, object, foliage].
+                        <![CDATA[
+                        <p><b>Режим наложения снега.</b></p>
+                        <hr/>
+                        <p>Для двигающихся, динамических объектов следует использовать режим "object".</p>
+                        <p>Значение по умолчанию: world.</p>
+                        <p>Значения: [world, object, foliage].</p>
+                        ]]>
                     </xs:documentation>
                 </xs:annotation>
                 <xs:restriction base="xs:string">
@@ -219,56 +347,88 @@
         <xs:attribute name="SnowUpNoiseIntensity" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Интенсивность паттерна шума, использующегося при проявлении снежного слоя. По умолчанию: 0
+                    <![CDATA[
+                    <p><b>Интенсивность паттерна шума, использующегося при проявлении снежного слоя.</b></p>
+                    <hr/>
+                    <p>По умолчанию: 0.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="SnowUpNoiseScale" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Частотность паттерна шума снежного слоя. По умолчанию: 0.5
+                    <![CDATA[
+                    <p><b>Частотность паттерна шума снежного слоя.</b></p>
+                    <hr/>
+                    <p>По умолчанию: 0.5.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="SnowUpAngleRange" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Предельный угол (в градусах) отклонения нормали поверхности от вектора вверх, при котором будет наложен снежный слой. По умолчанию: 45.
+                    <![CDATA[
+                    <p><b>Предельный угол (в градусах) отклонения нормали поверхности от вектора вверх, при котором будет наложен снежный слой.</b></p>
+                    <hr/>
+                    <p>По умолчанию: 45.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="SnowUpFlatten" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Коэффициент выравнивания исходной карты нормалей в той области поверхности, где был наложен снежный слой. По умолчанию: 0.
+                    <![CDATA[
+                    <p><b>Коэффициент выравнивания исходной карты нормалей в той области поверхности, где был наложен снежный слой.</b></p>
+                    <hr/>
+                    <p>По умолчанию: 0.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="SnowifyNoiseIntensity" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Интенсивность наложения эффекта снежной пороши на поверхность. По умолчанию: 0.
+                    <![CDATA[
+                    <p><b>Интенсивность наложения эффекта снежной пороши на поверхность.</b></p>
+                    <hr/>
+                    <p>По умолчанию: 0.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="SnowifyNoiseIntensityShift" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Коэффициент усиления влияния маски затенения рассеянного света на интенсивность снежной пороши. По умолчанию: 0.
+                    <![CDATA[
+                    <p><b>Коэффициент усиления влияния маски затенения рассеянного света на интенсивность снежной пороши.</b></p>
+                    <hr/>
+                    <p>По умолчанию: 0.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="SnowifyNoiseTilingMult" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Множитель тайлинг эффекта снежной пороши. По умолчанию: 1.
+                    <![CDATA[
+                    <p><b>Множитель тайлинг эффекта снежной пороши.</b></p>
+                    <hr/>
+                    <p>По умолчанию: 1.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="ForceSnowUnderwater" type="xs:boolean">
             <xs:annotation>
                 <xs:documentation>
-                    Форсирование наложения снега даже после погружения поверхности под воду (по умолчанию, заснеженность вытирается в этих случаях).
+                    <![CDATA[
+                    <p><b>Форсирование наложения снега даже после погружения поверхности под воду</b></p>
+                    <hr/>
+                    <p>По умолчанию, заснеженность вытирается в этих случаях.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -284,7 +444,15 @@
     <xs:complexType name="T_MaterialOverrides">
         <xs:annotation>
             <xs:documentation>
-                Секция кастомизации покраски.
+                <![CDATA[
+                <p><b>Секция кастомизации покраски.</b></p>
+                <hr/>
+                <p>Теги:
+                    <ul>
+                        <li><b>MaterialOverride</b></li>
+                    </ul>
+                </p>
+                ]]>
             </xs:documentation>
         </xs:annotation>
         <xs:choice maxOccurs="unbounded">
@@ -296,43 +464,65 @@
     <xs:complexType name="T_MaterialOverride">
         <xs:annotation>
             <xs:documentation>
-                Переопределение материала.
+                <![CDATA[
+                <p><b>Переопределение материала.</b></p>
+                ]]>
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="Name" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Имя кастомизации. Это имя связывает данное переопределение материала с цветовыми пресетами. Все пресеты трака, заданные тегами CustomizationPreset, у которых значение атрибута MaterialOverrideName совпадает с данным значением Name, будут задавать параметры цветовых тонов цвета для этого материала.
+                    <![CDATA[
+                    <p><b>Имя кастомизации.</b></p>
+                    <hr/>
+                    <p>Это имя связывает данное переопределение материала с цветовыми пресетами.</p>
+                    <p>Все пресеты трака, заданные тегами CustomizationPreset, у которых значение атрибута MaterialOverrideName совпадает с данным значением Name, будут задавать параметры цветовых тонов цвета для этого материала.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="TargetMaterialName" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Имя переопределяемого материала, заданное в теге Material.
+                    <![CDATA[
+                    <p><b>Имя переопределяемого материала, заданное в теге Material.</b></p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="TintMap" type="mapFile">
             <xs:annotation>
                 <xs:documentation>
-                    Карта, определяющая зоны покраски.
+                    <![CDATA[
+                    <p><b>Карта, определяющая зоны покраски.</b></p>
+                    <hr/>
+                    <p>Зоны задаются по каналам RGB. Таким образом можно задать до трех цветов тонировки.</p>
+                    ]]>
+                    
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="TintMaskScale" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Множитель на значение Tint из текстуры TintMap. Позволяет сделать более жесткую границу маски. Если карта TintMap сделана правильно, то этот коэффициент не нужен.
+                    <![CDATA[
+                    <p><b>Множитель на значение Tint из текстуры TintMap.</b></p>
+                    <hr/>
+                    <p>Позволяет сделать более жесткую границу маски.</p>
+                    <p>Если карта TintMap сделана правильно, то этот коэффициент не нужен.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="AlbedoMap" type="mapFile">
             <xs:annotation>
                 <xs:documentation>
-                    Карта с базовым цветом поверхности. Это может быть как и абсолютно новая раскраска автомобиля, так и подготовленная для изменения тона карта.
-                    Для адекватного наложения тона, все места, на которые планируется наносить тонирование должны быть белыми. Яркость белого, в среднем: RGB 220:220:220.
-                    На первой картинке оригинальная текстура, на второй подготовленная под покраску, на третьей зоны покраски.
+                    <![CDATA[
+                    <p><b>Карта с базовым цветом поверхности.</b></p>
+                    <hr/>
+                    <p>Это может быть как и абсолютно новая раскраска автомобиля, так и подготовленная для изменения тона карта.</p>
+                    <p>Для адекватного наложения тона, все места, на которые планируется наносить тонирование должны быть белыми. Яркость белого, в среднем: RGB 220:220:220.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -348,7 +538,7 @@
 
     <xs:simpleType name="mapFile">
         <xs:restriction base="xs:string">
-            <xs:pattern value=".*__(s_d_a|d|d_a|n_d|sh_d|em_d)\.tga"/>
+            <xs:pattern value=".*__(d|d_a|n_d|sh_d|em_d)\.tga"/>
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>

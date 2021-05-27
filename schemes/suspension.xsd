@@ -8,7 +8,7 @@
     <xs:element name="_templates">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
-                <xs:any namespace="##local" processContents="lax"/>
+                <xs:any namespace="##local" processContents="lax" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="Include" type="xs:string"/>
         </xs:complexType>
@@ -27,8 +27,6 @@
                         <li><b>SuspensionSet</b></li>
                     </ul>
                 </p>
-                <hr/>
-                <p>Атрибуты: отсутствуют.</p>
                 ]]>
             </xs:documentation>
         </xs:annotation>
@@ -47,19 +45,19 @@
                 <hr/>
                 <p>Теги:
                     <ul>
-                        <li><b>Suspension*</b> [front]</li>
-                        <li><b>Suspension*</b> [rear]</li>
+                        <li><b>Suspension</b>* {front}</li>
+                        <li><b>Suspension</b>* {rear}</li>
                         <li><b>GameData</b></li>
                     </ul>
                 </p>
                 <hr/>
                 <p>Атрибуты:
                     <ul>
-                        <li><b>Name*</b> (string)</li>
-                        <li><b>UiName</b> (string)</li>
-                        <li><b>DamageCapacity</b> (int) [0; 64000]</li>
-                        <li><b>CriticalDamageThreshold</b> (float) [0; 0.999]</li>
-                        <li><b>BrokenWheelDamageMultiplier</b> (float) [0; 100]</li>
+                        <li><b>Name</b>* (строка)</li>
+                        <li><b>UiName</b> (строка)</li>
+                        <li><b>DamageCapacity</b> (число) [0; 64000]</li>
+                        <li><b>CriticalDamageThreshold</b> (число) [0; 0.999]</li>
+                        <li><b>BrokenWheelDamageMultiplier</b> (число) [0; 100]</li>
                     </ul>
                 </p>
                 ]]>    
@@ -79,11 +77,23 @@
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="UiName" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    <![CDATA[
+                    <p><b>Ui имя подвески.</b></p>
+                    <hr/>
+                    <p>По умолчанию "".</p>
+                    ]]>
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="DamageCapacity">
             <xs:annotation>
                 <xs:documentation>
                     <![CDATA[ 
                     <p><b>Размер допустимого ущерба.</b></p>
+                    <hr/>
                     <p>По умолчанию 0.</p>
                     <p>Диапазон значений [0; 64000].</p>
                     ]]>
@@ -101,6 +111,7 @@
                 <xs:documentation>
                     <![CDATA[ 
                     <p><b>Порог критического урона.</b></p>
+                    <hr/>
                     <p>По умолчанию 0.7.</p>
                     <p>Диапазон значений [0; 0.999].</p>
                     ]]>
@@ -118,6 +129,7 @@
                 <xs:documentation>
                     <![CDATA[ 
                     <p><b>Коэффициент увеличения повреждения подвески при пробитом колесе.</b></p>
+                    <hr/>
                     <p>По умолчанию 1.</p>
                     <p>Диапазон значений [0; 100].</p>
                     <p><i>Когда удар приходит в конкретное колесо - если оно Broken, тогда урон в подвеску умножается на этот коэффициент.</i></p>
@@ -137,13 +149,39 @@
     <xs:complexType name="T_SuspensionFront">
         <xs:annotation>
             <xs:documentation>
-                Определяет взаимодействие колеса с траком.
+                <![CDATA[
+                <p><b>Подвеска</b></p>
+                <p>Определяет взаимодействие колеса с траком.</p>
+                <hr/>
+                <p>Теги:
+                    <ul>
+                        <li><b>GameData</b></li>
+                    </ul>
+                </p>
+                <hr/>
+                <p>Атрибуты:
+                    <ul>
+                        <li><b>WheelType</b>* {front} ('front' | 'rear')</li>
+                        <li><b>Height</b>* [число] [-1000; 1000]</li>
+                        <li><b>Strength</b>* [число]</li>
+                        <li><b>Damping</b> [число] [0; 1000]</li>
+                        <li><b>SuspensionMin</b>* [число] [-1000; 1000]</li>
+                        <li><b>SuspensionMax</b> [число] [-1000; 1000]</li>
+                        <li><b>BrokenSuspensionMax</b>* [число] [-1000; 1000]</li>
+                    </ul>
+                </p>
+                ]]>
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="WheelType" type="xs:string" use="required" fixed="front">
             <xs:annotation>
                 <xs:documentation>
-                    Тип колеса.
+                    <![CDATA[ 
+                    <p><b>Тип колеса.</b></p>
+                    <hr/>
+                    <p>Возможные значения: 'front', 'rear'.</p>
+                    <p>В траке описывается атрибутом Location тегa Wheel.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -154,13 +192,39 @@
     <xs:complexType name="T_SuspensionRear">
         <xs:annotation>
             <xs:documentation>
-                Определяет взаимодействие колеса с траком.
+                <![CDATA[
+                <p><b>Подвеска</b></p>
+                <p>Определяет взаимодействие колеса с траком.</p>
+                <hr/>
+                <p>Теги:
+                    <ul>
+                        <li><b>GameData</b></li>
+                    </ul>
+                </p>
+                <hr/>
+                <p>Атрибуты:
+                    <ul>
+                        <li><b>WheelType</b>* {rear} ('front' | 'rear')</li>
+                        <li><b>Height</b>* [число] [-1000; 1000]</li>
+                        <li><b>Strength</b>* [число]</li>
+                        <li><b>Damping</b> [число] [0; 1000]</li>
+                        <li><b>SuspensionMin</b>* [число] [-1000; 1000]</li>
+                        <li><b>SuspensionMax</b> [число] [-1000; 1000]</li>
+                        <li><b>BrokenSuspensionMax</b>* [число] [-1000; 1000]</li>
+                    </ul>
+                </p>
+                ]]>
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="WheelType" type="xs:string" use="required" fixed="rear">
             <xs:annotation>
                 <xs:documentation>
-                    Тип колеса.
+                    <![CDATA[ 
+                    <p><b>Тип колеса.</b></p>
+                    <hr/>
+                    <p>Возможные значения: 'front', 'rear'.</p>
+                    <p>В траке описывается атрибутом Location тегa Wheel.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -172,7 +236,12 @@
         <xs:attribute name="Height" use="required">
             <xs:annotation>
                 <xs:documentation>
-                    Высота подвески. Сдвиг колеса по оси -OY относительно определенного в траке атрибутом Pos тега Wheel. Диапазон значений [-1000;1000].
+                    <![CDATA[ 
+                    <p><b>Высота подвески.</b></p>
+                    <hr/>
+                    <p>Сдвиг колеса по оси -OY относительно определенного в траке атрибутом Pos тега Wheel.</p>
+                    <p>Диапазон значений [-1000; 1000].</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
             <xs:simpleType>
@@ -185,7 +254,9 @@
         <xs:attribute name="Strength" use="required">
             <xs:annotation>
                 <xs:documentation>
-                    Жесткость подвески.
+                    <![CDATA[ 
+                    <p><b>Жесткость подвески.</b></p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
             <xs:simpleType>
@@ -197,7 +268,11 @@
         <xs:attribute name="Damping">
             <xs:annotation>
                 <xs:documentation>
-                    Затухание. Диапазон значений [0; 1000].
+                    <![CDATA[ 
+                    <p><b>Затухание.</b></p>
+                    <hr/>
+                    <p>Диапазон значений [0; 1000].</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
             <xs:simpleType>
@@ -210,7 +285,12 @@
         <xs:attribute name="SuspensionMin" use="required">
             <xs:annotation>
                 <xs:documentation>
-                    Минимальный ход подвески (Позиция, которую колесо может принять при полной просадке подвески). Диапазон значений [-1000; 1000].
+                    <![CDATA[ 
+                    <p><b>Минимальный ход подвески.</b></p>
+                    <hr/>
+                    <p>Позиция, которую колесо может принять при полной просадке подвески.</p>
+                    <p>Диапазон значений [-1000; 1000].</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
             <xs:simpleType>
@@ -223,7 +303,13 @@
         <xs:attribute name="SuspensionMax">
             <xs:annotation>
                 <xs:documentation>
-                    Максимальный ход подвески (Позиция, которую может принять колесо, если подвеска в рабочем состоянии и ее жесткость равна нулю, когда колесо висит в воздухе). Значение по умолчанию 1. Диапазон значений [-1000; 1000].
+                    <![CDATA[ 
+                    <p><b>Максимальный ход подвески.</b></p>
+                    <hr/>
+                    <p>Позиция, которую может принять колесо, если подвеска в рабочем состоянии и ее жесткость равна нулю, когда колесо висит в воздухе.</p>
+                    <p>Значение по умолчанию 1.</p>
+                    <p>Диапазон значений [-1000; 1000].</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
             <xs:simpleType>
@@ -236,7 +322,11 @@
         <xs:attribute name="BrokenSuspensionMax" use="required">
             <xs:annotation>
                 <xs:documentation>
-                    Максимальный ход сломанной подвески. Диапазон значений [-1000; 1000].
+                    <![CDATA[ 
+                    <p><b>Максимальный ход сломанной подвески.</b></p>
+                    <hr/>
+                    <p>Диапазон значений [-1000; 1000].</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
             <xs:simpleType>
@@ -251,7 +341,23 @@
     <xs:complexType name="T_GameData">
         <xs:annotation>
             <xs:documentation>
-                Информация о взаимодействии подвески с окружающим миром.
+                <![CDATA[ 
+                <p><b>Информация о взаимодействии подвески с окружающим миром.</b></p>
+                <hr/>
+                <p>Теги:
+                    <ul>
+                        <li><b>UiDesc</b></li>
+                    </ul>
+                </p>
+                <hr/>
+                <p>Атрибуты:
+                    <ul>
+                        <li><b>Price</b> [число]</li>
+                        <li><b>UnlockByExploration</b> [логическое]</li>
+                        <li><b>UnlockByRank</b> [число] (1+)</li>
+                    </ul>
+                </p>
+                ]]>
             </xs:documentation>
         </xs:annotation>
         <xs:all>
@@ -260,7 +366,9 @@
         <xs:attribute name="Price">
             <xs:annotation>
                 <xs:documentation>
-                   Цена. 
+                    <![CDATA[ 
+                    <p><b>Цена.</b></p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
             <xs:simpleType>
@@ -272,14 +380,21 @@
         <xs:attribute name="UnlockByExploration" type="xs:boolean">
             <xs:annotation>
                 <xs:documentation>
-                    Разлочивается разведкой. То есть, до тех пор, пока не найдешь подвеску на карте, она залочена в магазине. Значения true, false
+                    <![CDATA[ 
+                    <p><b>Разлочивается разведкой.</b></p>
+                    <hr/>
+                    <p>То есть, до тех пор, пока не найдешь подвеску на карте, она залочена в магазине.</p>
+                    <p>Значения: true, false.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="UnlockByRank">
             <xs:annotation>
                 <xs:documentation>
-                    Разлочивается рангом.
+                    <![CDATA[ 
+                    <p><b>Разлочивается рангом.</b></p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
             <xs:simpleType>
@@ -294,34 +409,37 @@
     <xs:complexType name="T_UiDesc">
         <xs:annotation>
             <xs:documentation>
-                Блок UI.
+                <![CDATA[ 
+                <p><b>Блок UI.</b></p>
+                <hr/>
+                <p>Атрибуты:
+                    <ul>
+                        <li><b>UiDesc</b></li>
+                        <li><b>UiName</b></li>
+                    </ul>
+                </p>
+                ]]>
             </xs:documentation>
         </xs:annotation>
         <xs:attribute name="UiDesc" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Описание подвески. Примечание: Для этого атрибута вы можете задать просто текстовое значение, в двойных кавычках. Например, вы можете написать "Какой-то текст" как такое значение и именно этот текст и будет отображен в UI. Или, вы можете использовать в этом поле строковый идентификатор (например, "UI_STRING_IDENTIFIER") и, с его помощью, локализовать значение этого поля на разные языки.
+                    <![CDATA[ 
+                    <p><b>Описание подвески.</b></p>
+                    <hr/>
+                    <p>Примечание: Для этого атрибута вы можете задать просто текстовое значение, в двойных кавычках. Например, вы можете написать "Какой-то текст" как такое значение и именно этот текст и будет отображен в UI. Или, вы можете использовать в этом поле строковый идентификатор (например, "UI_STRING_IDENTIFIER") и, с его помощью, локализовать значение этого поля на разные языки.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="UiName" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
-                    Название подвески. Примечание: Для этого атрибута вы можете задать просто текстовое значение, в двойных кавычках. Например, вы можете написать "Какой-то текст" как такое значение и именно этот текст и будет отображен в UI. Или, вы можете использовать в этом поле строковый идентификатор (например, "UI_STRING_IDENTIFIER") и, с его помощью, локализовать значение этого поля на разные языки.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="UiIcon30x30" type="xs:string">
-            <xs:annotation>
-                <xs:documentation>
-                    Нет в документации
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="UiIcon40x40" type="xs:string">
-            <xs:annotation>
-                <xs:documentation>
-                    Нет в документации
+                    <![CDATA[ 
+                    <p><b>Название подвески.</b></p>
+                    <hr/>
+                    <p>Примечание: Для этого атрибута вы можете задать просто текстовое значение, в двойных кавычках. Например, вы можете написать "Какой-то текст" как такое значение и именно этот текст и будет отображен в UI. Или, вы можете использовать в этом поле строковый идентификатор (например, "UI_STRING_IDENTIFIER") и, с его помощью, локализовать значение этого поля на разные языки.</p>
+                    ]]>
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
